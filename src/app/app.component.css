@@ -1,0 +1,136 @@
+form {
+  font-family: Arial, sans-serif;
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  display: flex;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.title-div {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.title-image {
+  max-width: 100%; 
+  height: auto; 
+  display: block;
+  margin: 0 auto;
+  margin-left: -33px;
+}
+
+label {
+  width: 100px; 
+  margin-right: 10px;
+  font-weight: bold;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.input-icon {
+  width: 20px;
+  height: 20px; 
+  position: absolute;
+  left: 44.5%;
+}
+
+#title {
+  color: #fff;
+  font-size: 1.5em; 
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+  color: #666;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"]{
+  padding: 8px 8px 8px 30px;
+}
+
+textarea {
+  height: 80px;
+}
+
+button[type="submit"] {
+  width: 50%;
+  padding: 15px;
+  background: linear-gradient(to bottom, #cccccc 50%, #ffffff 50%);
+  border-radius: 7px; 
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 0.3;
+  color: #666;
+  border: 1px solid #ccc;
+  margin-left: 110px;
+}
+
+button[type="submit"]:hover {
+  background: linear-gradient(to bottom, #bbbbbb 50%, #eeeeee 50%);
+}
+
+select {
+  height: 36px; 
+}
+
+input.input-error{
+  border-color: red; 
+  background-color: #ffe6e6; 
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+.result-form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  text-align: center;
+}
+
+.result-form p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.result-form button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.result-form pre {
+  font-size: 16px;
+  white-space: pre-wrap; 
+  word-wrap: break-word; 
+}
+

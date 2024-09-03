@@ -1,0 +1,47 @@
+<form *ngIf="!showResultForm" (ngSubmit)="sendFeedback()" #feedbackForm="ngForm">
+  <div class="title-div">
+    <img src="{{ 'assets/img.png' }}" class="title-image">
+  </div>
+
+  <div class="form-group">
+    <label for="name">Ваше имя:</label>
+    <img src="{{ 'assets/name.png' }}" class="input-icon">
+    <input type="text" id="name" [(ngModel)]="name" name="name" required>
+  </div>
+
+  <div class="form-group">
+    <label for="phone">Ваш телефон:</label>
+    <img src="{{ 'assets/phone.png' }}" class="input-icon">
+    <input type="number" id="phone" [(ngModel)]="phone" name="phone" placeholder="+7 (999) 999-99-99" required>
+  </div>
+  
+  <div class="form-group">
+    <label for="email">Ваш Email:</label>
+    <img src="{{ 'assets/mail.png' }}" class="input-icon">
+    <input type="email" id="email" [(ngModel)]="email" name="email" [ngClass]="{'input-error': !isEmailValid && emailTouched}" required (input)="checkEmailValidity($event)">
+  </div>
+
+  <div class="form-group">
+    <label for="topic">Тема:</label>
+    <select id="topic" [(ngModel)]="topic" name="topic" required>
+      <option value='support'>Техподдержка</option>
+      <option value='sales'>Продажи</option>
+      <option value='other'>Другое</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="message">Ваше сообщение:</label>
+    <textarea id="message" [(ngModel)]="message" name="message" required></textarea>
+  </div>
+
+  <button type="submit" [disabled]="feedbackForm.invalid">Отправить письмо!</button>
+</form>
+
+<div *ngIf="showResultForm" class="result-form">
+  <div class="form-group">
+    <pre>{{ feedbackMessage }}</pre>
+  </div>
+  <button (click)="closeResultForm()">OK</button>
+</div>
+
