@@ -28,33 +28,82 @@ pool.connect((err) => {
 });
 
 app.get('/api/getFeedback', (req, res) => {
-  pool.query('SELECT * FROM feedback_tb ORDER BY id DESC LIMIT 1;', (err, result) => {
-    if (err) {
-      console.error('Error executing query:', err);
-      res.status(500).json({ error: 'Internal Server Error' });
-    } else {
-      res.json(result.rows);
+  pool.query(
+    `SELECT
+      f.id,
+      c.name AS contact_name,
+      c.phone AS contact_phone,
+      c.email AS contact_email,
+      t.name AS topic_name,
+      f.message
+    FROM
+      feedback_tb f
+      JOIN contacts c ON f.contact_id = c.id
+      JOIN topics t ON f.topic_id = t.id
+    ORDER BY f.id DESC
+    LIMIT 1;`,
+    (err, result) => {
+      if (err) {
+        console.error('Error executing query:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        res.json(result.rows);
+      }
     }
-  });
+  );
 });
 
 app.post('/api/sendFeedback', (req, res) => {
-  const { name, phone, email, message, topic } = req.body;
+  const { name, phone, email, message, topicId } = req.body;
 
-  if (!name || !phone || !email || !message || !topic) {
+  if (!name || !phone || !email || !message || !topicId) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
   pool.query(
-    'INSERT INTO feedback_tb (name, phone, email, message, topic) VALUES ($1, $2, $3, $4, $5);',
-    [name, phone, email, message, topic],
+    'SELECT id FROM contacts WHERE name = $1 AND phone = $2 AND email = $3;',
+    [name, phone, email],
     (err, result) => {
       if (err) {
         console.error('Error executing query:', err);
         return res.status(500).json({ error: 'Internal Server Error' });
       }
-      res.status(201).json(result.rows[0]);
+
+      let contactId;
+
+      if (result.rows.length > 0) {
+        contactId = result.rows[0].id;
+        insertFeedback(contactId);
+      } else {
+        pool.query(
+          'INSERT INTO contacts (name, phone, email) VALUES ($1, $2, $3) RETURNING id;',
+          [name, phone, email],
+          (err, result) => {
+            if (err) {
+              console.error('Error executing query:', err);
+              return res.status(500).json({ error: 'Internal Server Error' });
+            }
+            contactId = result.rows[0].id;
+            insertFeedback(contactId);
+          }
+        );
+      }
     }
   );
+
+  const insertFeedback = (contactId) => {
+    pool.query(
+      'INSERT INTO feedback_tb (contact_id, message, topic_id) VALUES ($1, $2, $3);',
+      [contactId, message, topicId],
+      (err, result) => {
+        if (err) {
+          console.error('Error executing query:', err);
+          return res.status(500).json({ error: 'Internal Server Error' });
+        }
+        res.status(201).json({ message: 'Feedback successfully added' });
+      }
+    );
+  };
 });
+
 

@@ -18,15 +18,15 @@
   <div class="form-group">
     <label for="email">Ваш Email:</label>
     <img src="{{ 'assets/mail.png' }}" class="input-icon">
-    <input type="email" id="email" [(ngModel)]="email" name="email" [ngClass]="{'input-error': !isEmailValid && emailTouched}" required (input)="checkEmailValidity($event)">
+    <input type="email" id="email" [(ngModel)]="email" name="email" required>
   </div>
 
   <div class="form-group">
     <label for="topic">Тема:</label>
-    <select id="topic" [(ngModel)]="topic" name="topic" required>
-      <option value='support'>Техподдержка</option>
-      <option value='sales'>Продажи</option>
-      <option value='other'>Другое</option>
+    <select id="topic" [(ngModel)]="topicId" name="topicId" required>
+      <option value="1">Техподдержка</option>
+      <option value="2">Продажи</option>
+      <option value="3">Другое</option>
     </select>
   </div>
 
@@ -35,7 +35,11 @@
     <textarea id="message" [(ngModel)]="message" name="message" required></textarea>
   </div>
 
-  <button type="submit" [disabled]="feedbackForm.invalid">Отправить письмо!</button>
+  <div class="recaptcha-container">
+    <re-captcha (resolved)="executeRecaptcha($event)" siteKey="6LfyFTUqAAAAAP1Cb9wNAuUwFYsZrmx1M4ZEFcT7"></re-captcha>
+  </div>
+  
+  <button type="submit" [disabled]="feedbackForm.invalid || !captchaToken">Отправить письмо!</button>
 </form>
 
 <div *ngIf="showResultForm" class="result-form">
@@ -44,4 +48,3 @@
   </div>
   <button (click)="closeResultForm()">OK</button>
 </div>
-

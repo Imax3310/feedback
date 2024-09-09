@@ -82,6 +82,7 @@ button[type="submit"] {
   color: #666;
   border: 1px solid #ccc;
   margin-left: 110px;
+  margin-top: 7px;
 }
 
 button[type="submit"]:hover {
@@ -132,5 +133,10 @@ input.input-error{
   font-size: 16px;
   white-space: pre-wrap; 
   word-wrap: break-word; 
+}
+
+.recaptcha-container {
+  display: flex;
+  justify-content: center;
 }
 

@@ -1,14 +1,17 @@
 import { RouterOutlet } from '@angular/router';
 import { NgFor, CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
+import { ReCaptchaV3Service } from 'ng-recaptcha';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NgFor, CommonModule, HttpClientModule, FormsModule],
+  imports: [RouterOutlet, NgFor, CommonModule, HttpClientModule, FormsModule, AppComponent, RecaptchaModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -17,17 +20,25 @@ export class AppComponent implements OnInit{
   name: string = '';
   phone: string = '';
   email: string = '';
-  topic: string = '';
+  topicId: number = 0;
+  topics: any[] = []; 
   message: string = '';
   feedbackMessage: string = '';
   feedbackSent: boolean = false;
   isEmailValid: boolean = true;
   emailTouched: boolean = false;
   showResultForm: boolean = false;
+  captchaToken: string | null = null;
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
+  }
+
+  recapthcaService = inject(ReCaptchaV3Service);
+  executeRecaptcha(token: any) {
+    this.captchaToken = token;
+    console.log(token);
   }
 
   checkEmailValidity(event: Event) {
@@ -45,21 +56,29 @@ export class AppComponent implements OnInit{
         name: this.name,
         phone: this.phone,
         email: this.email,
-        topic: this.topic,
+        topicId: this.topicId,
         message: this.message
       }).subscribe(
         (response) => {
           console.log('Feedback sent successfully:', response);
           this.feedbackSent = true;
-
+  
           this.http.get<any>('/api/getFeedback').subscribe(
             (feedbackResponse) => {
-              this.feedbackMessage = `Введенное сообщение
-              Имя: ${feedbackResponse[0].name}
-              Телефон: ${feedbackResponse[0].phone}
-              Email: ${feedbackResponse[0].email}
-              Тема: ${feedbackResponse[0].topic}
-              Сообщение: ${feedbackResponse[0].message}`;
+              const feedback = feedbackResponse[0];
+              const contactName = feedback.contact_name;
+              const contactPhone = feedback.contact_phone;
+              const contactEmail = feedback.contact_email;
+              const topicName = feedback.topic_name;
+              const message = feedback.message;
+  
+              this.feedbackMessage = `Введенное сообщение:
+              Имя: ${contactName}
+              Телефон: ${contactPhone}
+              Email: ${contactEmail}
+              Тема: ${topicName}
+              Сообщение: ${message}`;
+  
               this.showResultForm = true;
             },
             (error) => {
@@ -73,6 +92,7 @@ export class AppComponent implements OnInit{
       );
     }
   }
+  
 
   closeResultForm(): void {
     this.showResultForm = false;
